@@ -144,32 +144,34 @@ const InvoicePage: React.FC = () => {
       <div className="max-w-3xl mx-auto">
 
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-t-2xl p-6 border border-white/10 border-b-0 flex items-center justify-between print:bg-slate-900">
-          <div className="flex items-center space-x-4">
-            <img src="/galvaniy-logo.jpg" alt="Galvaniy" className="w-12 h-12 rounded-lg object-cover" />
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-t-2xl p-4 sm:p-6 border border-white/10 border-b-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:bg-slate-900">
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <img src="/galvaniy-logo.jpg" alt="Galvaniy" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover" />
             <div>
-              <h1 className="text-white font-bold text-lg">GALVANIY TECHNOLOGIES</h1>
-              <p className="text-slate-400 text-sm">Willing the future into existence</p>
+              <h1 className="text-white font-bold text-base sm:text-lg">GALVANIY TECHNOLOGIES</h1>
+              <p className="text-slate-400 text-xs sm:text-sm">Willing the future into existence</p>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-blue-400 font-bold text-xl">INVOICE</div>
-            <div className="text-slate-400 text-sm">{invoice.invoiceNumber}</div>
+          <div className="text-left sm:text-right w-full sm:w-auto border-t border-white/10 sm:border-0 pt-3 sm:pt-0 mt-1 sm:mt-0">
+            <div className="text-blue-400 font-bold text-lg sm:text-xl">INVOICE</div>
+            <div className="text-slate-400 text-xs sm:text-sm">{invoice.invoiceNumber}</div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="bg-slate-900/80 border border-white/10 border-t-0 rounded-b-2xl p-6 space-y-6 print:bg-white print:text-black">
+        <div className="bg-slate-900/80 border border-white/10 border-t-0 rounded-b-2xl p-4 sm:p-6 space-y-6 print:bg-white print:text-black">
 
           {/* Status + Dates */}
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[isPaid ? 'PAID' : invoice.status] || statusColors.UNPAID}`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-800/30 p-3 rounded-xl border border-white/5">
+            <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${statusColors[isPaid ? 'PAID' : invoice.status] || statusColors.UNPAID}`}>
               {isPaid ? '✅ PAID' : invoice.status}
             </span>
-            <div className="text-sm text-slate-400 space-x-4">
+            <div className="flex flex-col sm:flex-row text-xs sm:text-sm text-slate-400 gap-1 sm:gap-4 w-full sm:w-auto">
               <span>Issued: {new Date(invoice.createdAt).toLocaleDateString()}</span>
+              {invoice.dueDate && <span className="hidden sm:inline">•</span>}
               {invoice.dueDate && <span>Due: {new Date(invoice.dueDate).toLocaleDateString()}</span>}
-              {invoice.paidAt && <span className="text-emerald-400">Paid: {new Date(invoice.paidAt).toLocaleDateString()}</span>}
+              {invoice.paidAt && <span className="hidden sm:inline text-slate-600">•</span>}
+              {invoice.paidAt && <span className="text-emerald-400 font-medium">Paid: {new Date(invoice.paidAt).toLocaleDateString()}</span>}
             </div>
           </div>
 
@@ -191,45 +193,47 @@ const InvoicePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Line Items Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-800/60 text-slate-300">
-                  <th className="text-left py-3 px-4 rounded-l-lg">Description</th>
-                  <th className="text-center py-3 px-4">Qty</th>
-                  <th className="text-right py-3 px-4">Unit Price</th>
-                  <th className="text-right py-3 px-4 rounded-r-lg">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoice.items.map((item, i) => (
-                  <tr key={i} className="border-b border-white/5">
-                    <td className="py-3 px-4 text-white">{item.description}</td>
-                    <td className="py-3 px-4 text-center text-slate-300">{item.quantity}</td>
-                    <td className="py-3 px-4 text-right text-slate-300">{invoice.currency} {item.unitPrice.toLocaleString()}</td>
-                    <td className="py-3 px-4 text-right text-white font-medium">{invoice.currency} {(item.quantity * item.unitPrice).toLocaleString()}</td>
+          {/* Line Items Table (Scrollable on small devices) */}
+          <div className="-mx-4 sm:mx-0 overflow-x-auto">
+            <div className="min-w-[600px] sm:min-w-0 px-4 sm:px-0">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-slate-800/60 text-slate-300">
+                    <th className="text-left py-3 px-4 rounded-l-lg font-medium">Description</th>
+                    <th className="text-center py-3 px-4 font-medium w-16">Qty</th>
+                    <th className="text-right py-3 px-4 font-medium sm:w-32">Unit Price</th>
+                    <th className="text-right py-3 px-4 rounded-r-lg font-medium sm:w-32">Total</th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t border-white/10">
-                  <td colSpan={2}></td>
-                  <td className="py-2 px-4 text-right text-slate-400 font-medium">Subtotal</td>
-                  <td className="py-2 px-4 text-right text-white">{invoice.currency} {invoice.subtotal.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td colSpan={2}></td>
-                  <td className="py-2 px-4 text-right text-slate-400">Tax</td>
-                  <td className="py-2 px-4 text-right text-slate-300">{invoice.tax ? `${invoice.currency} ${invoice.tax.toLocaleString()}` : 'N/A'}</td>
-                </tr>
-                <tr className="bg-slate-800/80 rounded-lg">
-                  <td colSpan={2}></td>
-                  <td className="py-3 px-4 text-right text-white font-bold text-base rounded-l-lg">TOTAL</td>
-                  <td className="py-3 px-4 text-right text-blue-400 font-bold text-lg rounded-r-lg">{invoice.currency} {invoice.total.toLocaleString()}</td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody>
+                  {invoice.items.map((item, i) => (
+                    <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
+                      <td className="py-4 px-4 text-white">{item.description}</td>
+                      <td className="py-4 px-4 text-center text-slate-300 bg-slate-900/30">{item.quantity}</td>
+                      <td className="py-4 px-4 text-right text-slate-300">{invoice.currency} {item.unitPrice.toLocaleString()}</td>
+                      <td className="py-4 px-4 text-right text-white font-medium bg-slate-900/30">{invoice.currency} {(item.quantity * item.unitPrice).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="border-t border-white/10">
+                    <td colSpan={2} className="hidden sm:table-cell"></td>
+                    <td className="py-3 px-4 text-right text-slate-400 font-medium" colSpan={window.innerWidth < 640 ? 3 : 1}>Subtotal</td>
+                    <td className="py-3 px-4 text-right text-white">{invoice.currency} {invoice.subtotal.toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={2} className="hidden sm:table-cell"></td>
+                    <td className="py-2 px-4 text-right text-slate-400" colSpan={window.innerWidth < 640 ? 3 : 1}>Tax</td>
+                    <td className="py-2 px-4 text-right text-slate-300">{invoice.tax ? `${invoice.currency} ${invoice.tax.toLocaleString()}` : 'N/A'}</td>
+                  </tr>
+                  <tr className="bg-slate-800/80 rounded-lg">
+                    <td colSpan={2} className="hidden sm:table-cell"></td>
+                    <td className="py-4 px-4 text-right text-white font-bold text-base sm:rounded-l-lg" colSpan={window.innerWidth < 640 ? 3 : 1}>TOTAL</td>
+                    <td className="py-4 px-4 text-right text-blue-400 font-bold text-lg sm:rounded-r-lg">{invoice.currency} {invoice.total.toLocaleString()}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
 
           {/* Notes */}
@@ -304,12 +308,12 @@ const InvoicePage: React.FC = () => {
             )}
 
             {/* Download + Print */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               {isPaid ? (
                 <>
                   <button
                     onClick={handlePreviewReceipt}
-                    className="flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-emerald-500/30 hover:bg-emerald-500/10 transition-all flex items-center justify-center space-x-2"
+                    className="w-full sm:flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-emerald-500/30 hover:bg-emerald-500/10 transition-all flex items-center justify-center space-x-2"
                   >
                     <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -319,7 +323,7 @@ const InvoicePage: React.FC = () => {
                   </button>
                   <button
                     onClick={handleDownloadReceipt}
-                    className="flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-emerald-500/30 hover:bg-emerald-500/10 transition-all flex items-center justify-center space-x-2"
+                    className="w-full sm:flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-emerald-500/30 hover:bg-emerald-500/10 transition-all flex items-center justify-center space-x-2"
                   >
                     <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -330,7 +334,7 @@ const InvoicePage: React.FC = () => {
               ) : (
                 <button
                   onClick={handleDownload}
-                  className="flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center space-x-2"
+                  className="w-full sm:flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center space-x-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -340,10 +344,10 @@ const InvoicePage: React.FC = () => {
               )}
               <button
                 onClick={handlePrint}
-                className="flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center space-x-2"
+                className="w-full sm:flex-1 py-3 rounded-xl font-medium text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center space-x-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
                 <span>Print</span>
               </button>
