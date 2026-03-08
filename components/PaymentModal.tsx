@@ -103,15 +103,16 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ tier, onClose, onSuccess })
     }
   };
 
-  const handleDownloadReceipt = () => {
+  const handleDownloadReceipt = async () => {
     if (!transactionId) return;
-    generateReceipt({
+    await generateReceipt({
       transactionId,
       date: new Date().toLocaleString(),
       amount: tier.price,
       paymentMethod: 'M-Pesa',
       planName: tier.name,
       phone: phone,
+      tokens: tier.tokens,
     });
   };
 

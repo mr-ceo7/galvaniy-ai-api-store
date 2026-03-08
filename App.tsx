@@ -1,8 +1,12 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { PRICING_TIERS } from './constants';
 import { PricingTier } from './types';
 import PaymentModal from './components/PaymentModal';
+import InvoicePage from './components/InvoicePage';
+import AdminInvoices from './components/AdminInvoices';
+import ReceiptPreview from './components/ReceiptPreview';
 
 type ViewState = 'landing' | 'dashboard';
 type ModalView = 'none' | 'login' | 'privacy' | 'terms';
@@ -184,7 +188,7 @@ const App: React.FC = () => {
     }
   };
 
-  return (
+  const mainContent = (
     <div className="min-h-screen bg-[#020617] relative overflow-hidden flex flex-col">
       {/* Floating Stars */}
       <Stars />
@@ -929,6 +933,15 @@ const App: React.FC = () => {
         />
       )}
     </div>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={mainContent} />
+      <Route path="/invoice/:id" element={<InvoicePage />} />
+      <Route path="/admin/invoices" element={<AdminInvoices />} />
+      <Route path="/receipt-test" element={<ReceiptPreview />} />
+    </Routes>
   );
 };
 
